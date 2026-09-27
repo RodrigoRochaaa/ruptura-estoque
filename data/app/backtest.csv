@@ -1,0 +1,11 @@
+agrupamento,grupo,produtos,taxa_voltou_30d,taxa_voltou_90d,taxa_voltou_1_ano,taxa_semana_total
+categoria_acao,cliente_principal_parou,20,0.0000,0.0500,0.0500,1358.23
+categoria_acao,fora_do_escopo,3465,0.6672,0.7619,0.8199,224471.57
+categoria_acao,monitorar,101,0.4653,0.5941,0.6733,5888.24
+categoria_acao,provavel_descontinuacao,159,0.0252,0.0755,0.1006,13552.56
+categoria_acao,ruptura_provavel,36,0.1944,0.3333,0.3889,2519.37
+categoria_acao,sazonal,27,0.2593,0.3704,0.4815,2895.18
+medidor_ruptura,atraso,108,0.7593,0.8889,0.9074,7110.70
+medidor_ruptura,indicio,47,0.6596,0.8298,0.8511,2407.10
+medidor_ruptura,normal,1444,0.9564,0.9806,0.9861,194178.36
+medidor_ruptura,ruptura,305,0.1115,0.1836,0.2361,28382.52

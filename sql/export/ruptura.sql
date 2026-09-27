@@ -1,0 +1,28 @@
+-- Diagnóstico por produto na data de referência: tudo o que o app mostra sai daqui.
+SELECT stockcode,
+       descricao,
+       categoria_acao,
+       prioridade_na_categoria,
+       perfil_frequencia,
+       curva_abc,
+       medidor_ruptura,
+       primeira_venda,
+       ultima_venda,
+       dias_com_venda,
+       periodo_silencio,
+       ROUND(ritmo_medio_dias, 2)          AS ritmo_medio_dias,
+       ROUND(silencio_relativo, 2)         AS silencio_relativo,
+       maior_intervalo_dias,
+       piso_silencio_dias,
+       ROUND(faturamento_total, 2)         AS faturamento_total,
+       quantidade_total,
+       ROUND(receita_dia_vendido, 2)       AS receita_dia_vendido,
+       ROUND(taxa_semana, 2)               AS taxa_semana,
+       ROUND(prob_silencio_por_acaso, 4)   AS prob_silencio_por_acaso,
+       ROUND(share_top_cliente, 3)         AS share_top_cliente,
+       dias_sem_comprar_top_cliente,
+       sazonal_por_nome,
+       acima_da_mediana,
+       ROUND(corte_faturamento::numeric, 2) AS corte_faturamento
+FROM gold.ruptura
+ORDER BY stockcode

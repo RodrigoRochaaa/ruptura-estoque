@@ -1,0 +1,68 @@
+{
+  "executado_em": "2026-09-27T23:27:30+00:00",
+  "data_ref": "2010-12-09",
+  "duracao_segundos": 80.1,
+  "linhas": {
+    "bronze.retail": 1067371,
+    "silver.vendas": 1015071,
+    "silver.produto": 4724,
+    "silver.vendas_dia": 529860,
+    "silver.features": 3808,
+    "gold.ruptura": 3808,
+    "gold.snapshots": 74367,
+    "gold.calibracao": 120,
+    "gold.retorno_produto": 3808
+  },
+  "checks": [
+    {
+      "check": "bronze_linhas_por_aba",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "features_abc_soma_100",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "features_ritmo_igual_media_intervalos",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "features_sem_dado_do_futuro",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "gold_categoria_valida",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "gold_exemplo_tem_par",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "silver_codigo_normalizado",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "silver_sem_fatura_nas_duas_abas",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "silver_so_venda_positiva",
+      "ok": true,
+      "linhas_com_falha": 0
+    },
+    {
+      "check": "snapshot_igual_features",
+      "ok": true,
+      "linhas_com_falha": 0
+    }
+  ]
+}
