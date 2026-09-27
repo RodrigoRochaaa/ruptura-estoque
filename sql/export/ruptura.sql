@@ -21,8 +21,8 @@ SELECT stockcode,
        ROUND(prob_silencio_por_acaso, 4)   AS prob_silencio_por_acaso,
        ROUND(share_top_cliente, 3)         AS share_top_cliente,
        dias_sem_comprar_top_cliente,
-       sazonal_por_nome,
-       acima_da_mediana,
+       sazonal_por_nome::text              AS sazonal_por_nome,
+       acima_da_mediana::text              AS acima_da_mediana,
        ROUND(corte_faturamento::numeric, 2) AS corte_faturamento
 FROM gold.ruptura
 ORDER BY stockcode
