@@ -1,0 +1,9 @@
+# Pipeline, EDA, figuras do README e testes (execução local)
+-r requirements.txt
+psycopg2-binary==2.9.11
+openpyxl==3.1.5
+sqlalchemy==2.0.44
+matplotlib==3.10.7
+seaborn==0.13.2
+pytest==9.1.1
+ruff==0.16.9

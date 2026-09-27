@@ -173,7 +173,9 @@ def resumo_categoria(codigo: str) -> tuple[int, float]:
 
 
 # ── Gráfico da linha do tempo de um produto ─────────────────────────────────
-def linha_do_tempo(stockcode: str, cor_passado: str, mostrar_futuro: bool, inicio: pd.Timestamp | None = None) -> go.Figure:
+def linha_do_tempo(
+    stockcode: str, cor_passado: str, mostrar_futuro: bool, inicio: pd.Timestamp | None = None
+) -> go.Figure:
     serie = dados["semanas"][dados["semanas"]["stockcode"] == stockcode]
     if inicio is not None:
         serie = serie[serie["semana"] >= inicio]
@@ -181,21 +183,33 @@ def linha_do_tempo(stockcode: str, cor_passado: str, mostrar_futuro: bool, inici
     fig = go.Figure()
     passado = serie[~serie["depois_da_ref"]]
     fig.add_bar(
-        x=passado["semana"], y=passado["faturamento"], marker_color=cor_passado, name="Antes do diagnóstico",
+        x=passado["semana"],
+        y=passado["faturamento"],
+        marker_color=cor_passado,
+        name="Antes do diagnóstico",
         hovertemplate="semana de %{x|%d/%m/%Y}<br>£%{y:,.0f}<extra></extra>",
     )
     if mostrar_futuro:
         futuro = serie[serie["depois_da_ref"]]
         fig.add_bar(
-            x=futuro["semana"], y=futuro["faturamento"], marker_color=COR_FUTURO, name="Depois (não usado no alerta)",
+            x=futuro["semana"],
+            y=futuro["faturamento"],
+            marker_color=COR_FUTURO,
+            name="Depois (não usado no alerta)",
             hovertemplate="semana de %{x|%d/%m/%Y} · depois do diagnóstico<br>£%{y:,.0f}<extra></extra>",
         )
     # O silêncio: da última venda até a data do diagnóstico.
     fig.add_vrect(x0=produto["ultima_venda"], x1=DATA_REF, fillcolor=COR_RUPTURA, opacity=0.14, line_width=0)
     fig.add_vline(x=DATA_REF, line_color=COR_MUTED, line_width=1)
     fig.add_annotation(
-        x=DATA_REF, y=1, yref="paper", text="diagnóstico" + (" · depois →" if mostrar_futuro else ""),
-        showarrow=False, xanchor="left", xshift=4, font=dict(color=COR_MUTED, size=11),
+        x=DATA_REF,
+        y=1,
+        yref="paper",
+        text="diagnóstico" + (" · depois →" if mostrar_futuro else ""),
+        showarrow=False,
+        xanchor="left",
+        xshift=4,
+        font=dict(color=COR_MUTED, size=11),
     )
     fig.update_layout(barmode="stack", bargap=0.25)
     fig.update_xaxes(tickformat="%m/%Y")
@@ -240,7 +254,9 @@ def detalhe_produto(stockcode: str) -> None:
     )
     if stockcode in set(dados["semanas"]["stockcode"]):
         mostrar_grafico(linha_do_tempo(stockcode, COR_NEUTRO, mostrar_futuro=True))
-        st.caption("Faturamento semanal. Faixa vermelha: o silêncio até o diagnóstico. Barras escuras: o que aconteceu depois, que não entra no alerta.")
+        st.caption(
+            "Faturamento semanal. Faixa vermelha: o silêncio até o diagnóstico. Barras escuras: o que aconteceu depois, que não entra no alerta."
+        )
     for item in evidencias(stockcode):
         st.markdown(f"- {item}")
     retorno = dados["retorno"].loc[dados["retorno"]["stockcode"] == stockcode].iloc[0]
@@ -276,14 +292,14 @@ aba_semana, aba_confianca, aba_metodo = st.tabs(["Esta semana", "Confiabilidade"
 # ════════════════════════════════════════════════════════════════════════════
 with aba_semana:
     colunas = st.columns(len(CATEGORIAS))
-    for coluna, (codigo, cat) in zip(colunas, CATEGORIAS.items()):
+    for coluna, (codigo, cat) in zip(colunas, CATEGORIAS.items(), strict=True):
         quantidade, taxa = resumo_categoria(codigo)
         coluna.markdown(
-            f"""<div class="card" title="{cat['regra']}">
-              <div class="card-rotulo"><span class="card-ponto" style="background:{cat['cor']}"></span>{cat['rotulo']}</div>
+            f"""<div class="card" title="{cat["regra"]}">
+              <div class="card-rotulo"><span class="card-ponto" style="background:{cat["cor"]}"></span>{cat["rotulo"]}</div>
               <div class="card-valor">{quantidade}</div>
               <div class="card-sub">{libras(taxa)}/semana no ritmo histórico</div>
-              <div class="card-sub">{cat['acao']}</div>
+              <div class="card-sub">{cat["acao"]}</div>
             </div>""",
             unsafe_allow_html=True,
         )
@@ -322,9 +338,13 @@ with aba_semana:
         "descricao": st.column_config.TextColumn("Produto", width="large"),
         "stockcode": st.column_config.TextColumn("Código"),
         "categoria": st.column_config.TextColumn("Categoria"),
-        "taxa_semana": st.column_config.NumberColumn("£/semana", format="£%d", help="Faturamento semanal no ritmo histórico"),
+        "taxa_semana": st.column_config.NumberColumn(
+            "£/semana", format="£%d", help="Faturamento semanal no ritmo histórico"
+        ),
         "periodo_silencio": st.column_config.NumberColumn("Parado há", format="%d dias"),
-        "silencio_relativo": st.column_config.NumberColumn("Silêncio", format="%.1f×", help="Quantas vezes o próprio ritmo"),
+        "silencio_relativo": st.column_config.NumberColumn(
+            "Silêncio", format="%.1f×", help="Quantas vezes o próprio ritmo"
+        ),
         "tendencia": st.column_config.BarChartColumn("26 semanas até o diagnóstico", y_min=0, color=COR_NEUTRO),
         "perfil": st.column_config.TextColumn("Perfil"),
         "curva_abc": st.column_config.TextColumn("ABC"),
@@ -355,8 +375,20 @@ with aba_semana:
         st.session_state["produto_url_aberto"] = True
         detalhe_produto(produto_url.upper())
 
-    download = lista[["stockcode", "descricao", "categoria", "taxa_semana", "periodo_silencio", "silencio_relativo",
-                      "ritmo_medio_dias", "perfil", "curva_abc", "ultima_venda"]]
+    download = lista[
+        [
+            "stockcode",
+            "descricao",
+            "categoria",
+            "taxa_semana",
+            "periodo_silencio",
+            "silencio_relativo",
+            "ritmo_medio_dias",
+            "perfil",
+            "curva_abc",
+            "ultima_venda",
+        ]
+    ]
     st.download_button(
         "Baixar lista (CSV)",
         download.to_csv(index=False).encode("utf-8"),
@@ -415,7 +447,7 @@ with aba_confianca:
             x=cats["taxa_voltou_90d"],
             orientation="h",
             marker_color=cats["grupo"].map(lambda c: CATEGORIAS[c]["cor"]),
-            text=[f"{pct(v)}  ·  {n} produtos" for v, n in zip(cats["taxa_voltou_90d"], cats["produtos"])],
+            text=[f"{pct(v)}  ·  {n} produtos" for v, n in zip(cats["taxa_voltou_90d"], cats["produtos"], strict=True)],
             textposition="outside",
             textfont=dict(color=COR_TEXTO),
             hovertemplate="%{y}: %{x:.0%} voltaram em 90 dias<extra></extra>",
@@ -557,7 +589,7 @@ with aba_metodo:
     st.markdown(
         f"""
 - **Ritmo só no período ativo.** `ritmo_medio_dias = (última venda − primeira venda) / (dias com venda − 1)`. O silêncio atual fica fora, para não contaminar o comportamento normal.
-- **Escopo:** silêncio relativo acima de 2, faturamento acima da mediana ({libras(ruptura['corte_faturamento'].iloc[0])}, calculada no SQL) e pelo menos 10 dias com venda. Mediana porque o faturamento é muito assimétrico.
+- **Escopo:** silêncio relativo acima de 2, faturamento acima da mediana ({libras(ruptura["corte_faturamento"].iloc[0])}, calculada no SQL) e pelo menos 10 dias com venda. Mediana porque o faturamento é muito assimétrico.
 - **Categorias em vez de um rótulo único.** A primeira regra verdadeira vale: cliente principal parou → sazonal → parado há mais de 60 dias → monitorar → ruptura provável. Cada uma pede uma ação diferente.
 - **Piso por perfil.** Diário precisa de mais de 7 dias parado, semanal de 14 e mensal de 28 antes de virar ruptura provável.
 - **Impacto como taxa.** £/semana no ritmo histórico, e não perda acumulada: a versão anterior multiplicava faturamento por dia de venda por dias corridos e inflava o número 3,9 vezes.

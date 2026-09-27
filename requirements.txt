@@ -1,0 +1,4 @@
+# App (é o que o Streamlit Community Cloud instala)
+streamlit==1.64.0
+pandas==2.3.3
+plotly==6.5.0

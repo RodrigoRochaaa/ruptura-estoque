@@ -13,7 +13,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -74,9 +74,7 @@ def executar(conexao, sql: str) -> list[tuple]:
 
 def carregar_bronze(conexao) -> None:
     with conexao.cursor() as cursor, BRONZE_CSV.open(encoding="utf-8") as arquivo:
-        cursor.copy_expert(
-            f"COPY bronze.retail ({COLUNAS_BRONZE}) FROM STDIN WITH (FORMAT csv, HEADER true)", arquivo
-        )
+        cursor.copy_expert(f"COPY bronze.retail ({COLUNAS_BRONZE}) FROM STDIN WITH (FORMAT csv, HEADER true)", arquivo)
     conexao.commit()
 
 
@@ -131,7 +129,7 @@ def main() -> None:
         conexao.close()
 
     execucao = {
-        "executado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "executado_em": datetime.now(UTC).isoformat(timespec="seconds"),
         "data_ref": data_ref.isoformat(),
         "duracao_segundos": round(time.perf_counter() - inicio, 1),
         "linhas": linhas,
