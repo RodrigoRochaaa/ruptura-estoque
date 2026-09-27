@@ -1,0 +1,17 @@
+[project]
+name = "ruptura-estoque"
+version = "1.0.0"
+description = "Detecção de ruptura de estoque no Online Retail II: pipeline SQL em camadas, validação com 12 meses de futuro e app Streamlit."
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+# O formatter cuida do tamanho das linhas de código; as que sobram são textos da interface.
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

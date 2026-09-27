@@ -1,7 +1,7 @@
 {
-  "executado_em": "2026-09-27T23:31:20+00:00",
+  "executado_em": "2026-09-27T23:46:38+00:00",
   "data_ref": "2010-12-09",
-  "duracao_segundos": 82.7,
+  "duracao_segundos": 53.2,
   "linhas": {
     "bronze.retail": 1067371,
     "silver.vendas": 1015071,
