@@ -1,0 +1,15 @@
+# Tema do design system: o CSS do app fica só para os cards.
+[theme]
+base = "dark"
+primaryColor = "#E24B4A"
+backgroundColor = "#111113"
+secondaryBackgroundColor = "#1C1C1E"
+textColor = "#F5F5F5"
+borderColor = "#2A2A2E"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

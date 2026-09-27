@@ -137,7 +137,9 @@ def main() -> None:
         "linhas": linhas,
         "checks": checks,
     }
-    (PASTA_APP / "execucao.json").write_text(json.dumps(execucao, indent=2, ensure_ascii=False), encoding="utf-8")
+    (PASTA_APP / "execucao.json").write_text(
+        json.dumps(execucao, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n"
+    )
     print(f"pipeline ok em {execucao['duracao_segundos']} s")
 
 
