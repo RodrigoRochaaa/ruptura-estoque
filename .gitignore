@@ -1,0 +1,18 @@
+# Dados brutos e intermediários: ver data/instrucoes_download.md
+data/raw/
+
+# Material local, fora do repositório público
+_legado/
+notas/
+CLAUDE.md
+*.pbix
+
+# Segredos
+.env
+.streamlit/secrets.toml
+
+# Ambiente local
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.vscode/
