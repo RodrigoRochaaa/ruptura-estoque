@@ -2,3 +2,5 @@
 *.png binary
 *.gif binary
 *.xlsx binary
+# O GitHub classifica .sql como dado e o deixa fora da barra de linguagens; aqui o SQL é o código principal.
+*.sql linguist-detectable
