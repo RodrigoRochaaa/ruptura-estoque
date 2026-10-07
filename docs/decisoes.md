@@ -43,7 +43,9 @@ calculada no SQL a cada execução. A versão anterior usava um valor digitado �
 
 1. **Cliente principal parou:** um cliente responde por 50% ou mais do faturamento do produto e não compra nada
    na loja há mais de 90 dias.
-2. **Sazonal:** o nome indica temporada (Christmas, Easter, Valentine, Hot Water Bottle...).
+2. **Sazonal:** o nome indica temporada (Christmas, Easter, Valentine, Hot Water Bottle...). Antes de
+   09/12/2010 há um único ciclo de vendas, então comparar ano contra ano exigiria usar o futuro. O nome é a
+   aproximação possível; medir a concentração das vendas em poucas semanas é o próximo passo.
 3. **Provável descontinuação:** parado há mais de 60 dias.
 4. **Monitorar:** silêncio relativo até 3; ou o silêncio ainda não passou da maior pausa que o produto já teve;
    ou não passou do piso do perfil (diário 7 dias, semanal 14, mensal 28).
@@ -64,13 +66,31 @@ ainda não sustenta uma conclusão. Na versão original, o piso aparecia como `t
 reconstrução mostrou que essas colunas somavam a *quantidade* vendida na janela e que a regra equivalia
 exatamente a `periodo_silencio > 7 / 14 / 28`. Agora ela é escrita assim.
 
-**Validação.** As métricas do diagnóstico usam só dados até 09/12/2010. A aba de 2011 entra apenas em
-`gold.retorno_produto`, `gold.calibracao` e `gold.backtest`. O alvo observável é *voltou a vender em até 90 dias*.
-Isso não prova ruptura, mas separa o que ainda tinha demanda do que saiu de linha.
+**Validação (backtest).** As métricas do diagnóstico usam só dados até 09/12/2010, sem data leakage. A aba de 2011
+entra apenas em `gold.retorno_produto`, `gold.calibracao` e `gold.backtest`. O alvo observável é *voltou a vender
+em até 90 dias*. Isso não prova ruptura, mas separa o que ainda tinha demanda do que saiu de linha.
+
+As faixas de silêncio relativo foram validadas nas 20 datas de `gold.snapshots`. **As categorias, só em
+09/12/2010**, uma das datas em que menos produtos voltam a vender (véspera do recesso de Natal). Validá-las em
+todas as datas exige calcular features e gold por data de referência, e é o próximo passo. Até lá, "ruptura
+provável" quer dizer "o grupo onde vale checar o estoque primeiro": voltou a vender 4 vezes mais que a provável
+descontinuação (33,3% contra 7,5% em 90 dias), não "stockout confirmado".
 
 **Correlação.** O Spearman entre silêncio relativo e faturamento é −0,41, mas parte disso é mecânica: quem está
 parado há mais tempo teve menos tempo para faturar. Por dia ativo, o valor cai para −0,24. Ele fica na EDA como
 associação. A validação do alerta é o backtest.
+
+## Fontes externas avaliadas
+
+O dado novo que importava era a segunda aba do próprio Excel, e ele já entrou. Fontes externas só entram se
+responderem a uma pergunta de negócio que o projeto não consegue responder sozinho. Avaliação de outubro de 2026:
+
+| Fonte | Decisão | Por quê |
+|---|---|---|
+| [FreshRetailNet-50K](https://arxiv.org/abs/2505.16319) (2025, CC BY 4.0): 50 mil séries loja × produto, 90 dias, por hora, com o status de stockout de cada hora | Projeto separado | É o único dataset público encontrado com ground truth de stockout, o que ataca a maior limitação daqui ("voltar a vender não prova ruptura"). Mas não se junta ao Online Retail II: é outro varejo, de perecíveis, em escala horária. Serve para validar o método, não para complementar este diagnóstico |
+| M5 (Walmart), Favorita, Dunnhumby | Não entra | Não têm rótulo de stockout: venda zero continua ambígua, o mesmo problema daqui |
+| Feriados do Reino Unido, clima, câmbio, índices de varejo | Não entra | Não respondem à pergunta de negócio. O calendário da loja sai do próprio dado (dias com venda) |
+| Ajustes de saída (*damaged*, *missing*, *No Stock*) e cancelamentos, que já estão na bronze | Próximo passo | É o mais perto de dado de estoque que o dataset tem. Hoje a silver os descarta ao ficar só com as vendas |
 
 ## Da versão original para a atual
 
@@ -86,10 +106,13 @@ tabelas antigas retornou 0 linhas nas duas direções. As mudanças vieram depoi
 | Corte de faturamento | £638,245 fixo no código (defasado) | mediana calculada: £733,42 | Valor derivado do dado não se digita |
 | Impacto | £2,8M de "faturamento perdido" acumulado | £/semana no ritmo histórico | A conta antiga misturava dia de venda com dia corrido (inflada 3,9×) |
 | Rótulo | "Ruptura" (341 produtos) | 5 categorias de ação | 76% dos marcados como ruptura nunca mais venderam |
-| Validação | correlação de Spearman | backtest com 12 meses e comparação com a regra simples | Mede se o alerta acerta |
+| Validação | correlação de Spearman | backtest com 12 meses e comparação com um baseline | Mede se o alerta acerta |
 | Regra de negócio | repetida no app e na EDA | só no SQL (gold) | Um lugar só, versionado e testado |
 
 ## Números de referência (execução de 27/09/2026)
+
+`tests/test_numeros_referencia.py` confere estes números contra os arquivos do app e confere o README contra os
+mesmos arquivos. Uma mudança de regra que altere algum deles faz o teste falhar e precisa ser justificada aqui.
 
 | Métrica | Valor |
 |---|---:|
@@ -104,7 +127,7 @@ tabelas antigas retornou 0 linhas nas duas direções. As mudanças vieram depoi
 | Cliente principal parou | 20 · £1.358/semana |
 | Voltaram em 90 dias: ruptura provável / descontinuação | 33,3% / 7,5% |
 | Calibração em 09/12/2010, voltou em 90 dias (0–1× … acima de 10×) | 92% · 73% · 67% · 41% · 24% · 7% |
-| Silêncio relativo × regra simples (305 alertas): acerto | 76,4% × 78,7% |
+| Silêncio relativo × baseline (305 alertas): precision | 76,4% × 78,7% |
 | Dias parado até o alerta (mediana) | 13 × 18 |
 | AUC (parou de vez em 12 meses) | 0,959 × 0,966 |
 | Spearman silêncio × faturamento (total / por dia ativo) | −0,41 / −0,24 |
