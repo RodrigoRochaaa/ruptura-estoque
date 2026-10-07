@@ -192,4 +192,4 @@ Código sob a licença [MIT](LICENSE). Os dados seguem a licença CC BY 4.0 da f
 
 ## Autor
 
-Rodrigo Rocha · [GitHub](https://github.com/RodrigoRochaaa)
+Rodrigo Rocha · [GitHub](https://github.com/RodrigoRochaaa) · [LinkedIn](https://www.linkedin.com/in/rodrigo-rocha-8a1039335/)
