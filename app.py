@@ -519,11 +519,17 @@ with aba_confianca:
     fig.update_xaxes(tickangle=-45, type="category")
     fig.update_yaxes(showgrid=False, tickfont_color=COR_TEXTO)
     mostrar_grafico(aplicar_layout(fig, 300))
+    # A legenda fala da faixa 3× a 5×, que o heatmap mostra: juntar com a de 5× a 10× esconderia que esta
+    # fica abaixo de 50% na maior parte das datas.
+    faixa_3_5 = calibracao[calibracao["faixa_ordem"] == 4]
+    meio_do_ano = faixa_3_5.loc[faixa_3_5["data_ref"].dt.month.between(3, 11), "taxa_voltou_90d"]
+    na_ref_3_5 = faixa_3_5.loc[faixa_3_5["data_ref"] == DATA_REF, "taxa_voltou_90d"].iloc[0]
     st.caption(
-        "Mais claro = mais produtos voltaram. De março a novembro, a maioria dos produtos entre 3× e 10× o ritmo "
-        "volta em 90 dias, o perfil de uma falta temporária. Em dezembro, poucos voltam: é quando o catálogo "
-        "gira. Em jan/11, logo depois do recesso de Natal (loja fechada), todos parecem parados e a relação se "
-        "inverte. Contar o tempo em dias comerciais é a próxima etapa."
+        f"Mais claro = mais produtos voltaram. Entre 3× e 5× o ritmo, de {pct(meio_do_ano.min())} a "
+        f"{pct(meio_do_ano.max())} dos produtos voltam em 90 dias nas datas de março a novembro, o perfil de uma "
+        f"falta temporária. Em {data_br(DATA_REF)}, só {pct(na_ref_3_5)}: a hipótese é a troca de coleção de fim "
+        "de ano, que o dado não permite confirmar. Em jan/11, logo depois do recesso de Natal (loja fechada), "
+        "todos parecem parados e a relação se inverte. Contar o tempo em dias comerciais é a próxima etapa."
     )
     with st.expander("Tabela da calibração"):
         st.dataframe(
@@ -598,9 +604,10 @@ with aba_metodo:
     )
     titulo("Limitações")
     st.markdown(
-        """
+        f"""
 - **Não há posição de estoque, fornecedor nem prazo de reposição.** O projeto identifica o sintoma (o produto parou) e a causa provável, não a causa confirmada.
-- **Sazonalidade é aproximada pelo nome do produto.** Com 25 meses, a comparação ano contra ano é a próxima etapa.
+- **As categorias foram conferidas em uma data só** ({data_br(DATA_REF)}, uma das datas em que menos produtos voltam a vender). As faixas de silêncio relativo foram conferidas em {dados["calibracao"]["data_ref"].nunique()} datas.
+- **Sazonalidade é aproximada pelo nome do produto.** Antes do diagnóstico há um único ciclo de vendas, o que não permite comparar ano contra ano sem usar o futuro. O próximo passo é medir a concentração das vendas em poucas semanas.
 - **O tempo é contado em dias corridos.** A loja não abre aos sábados nem no recesso de Natal, o que distorce datas logo depois de feriados.
 - **£/semana é uma projeção do ritmo histórico**, não uma perda observada.
 - **Voltar a vender não prova que houve ruptura**: é o indicador indireto que o dado permite.
@@ -610,5 +617,9 @@ with aba_metodo:
     st.divider()
     titulo("SQL do pipeline", "Os arquivos exatos que o pipeline executa, na ordem.")
     arquivos = sorted(PASTA_SQL.glob("[0-9][0-9]_*.sql"))
-    escolhido = st.selectbox("Arquivo", arquivos, index=6, format_func=lambda p: p.name, label_visibility="collapsed")
+    # Abre na gold, onde estão as regras de decisão; pelo nome, para não depender da numeração.
+    inicial = next(i for i, p in enumerate(arquivos) if p.name.startswith("06_"))
+    escolhido = st.selectbox(
+        "Arquivo", arquivos, index=inicial, format_func=lambda p: p.name, label_visibility="collapsed"
+    )
     st.code(escolhido.read_text(encoding="utf-8"), language="sql")
