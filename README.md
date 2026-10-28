@@ -100,19 +100,6 @@ flowchart LR
 - **O app roda sem banco** e é o que vai para o Streamlit Community Cloud. O CI roda lint e testes contra os
   CSVs versionados, inclusive um teste de regressão que confere os números deste README com os dados.
 
-## O que o projeto não faz
-
-- **Não há posição de estoque, fornecedor nem prazo de reposição no dado.** O projeto identifica o sintoma e a
-  causa provável, não a causa confirmada.
-- **Voltar a vender não prova que houve ruptura.** É o indicador indireto que o dado permite.
-- **As categorias foram validadas em uma data só** (09/12/2010, uma das datas em que menos produtos voltam a
-  vender). As faixas de silêncio relativo foram validadas em 20.
-- **Sazonalidade é aproximada pelo nome do produto.** Antes do diagnóstico há um único ciclo de vendas, o que não
-  permite comparar ano contra ano sem usar o futuro.
-- **O tempo é contado em dias corridos.** A loja quase não abre aos sábados e fecha no Natal, o que distorce
-  datas logo depois de feriados (o caso de janeiro de 2011).
-- **£/semana é uma projeção do ritmo histórico**, não uma perda observada.
-
 ## Como rodar
 
 Só o app (usa os CSVs já versionados):
