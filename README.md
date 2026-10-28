@@ -178,10 +178,6 @@ Chen, D. (2012). *Online Retail II* [Dataset]. UCI Machine Learning Repository.
 [https://doi.org/10.24432/C5CG6D](https://doi.org/10.24432/C5CG6D). Licença CC BY 4.0. Loja online britânica,
 dezembro de 2009 a dezembro de 2011. Valores em libras (£).
 
-## Licença
-
-Código sob a licença [MIT](LICENSE). Os dados seguem a licença CC BY 4.0 da fonte.
-
 ## Autor
 
 Rodrigo Rocha · [GitHub](https://github.com/RodrigoRochaaa) · [LinkedIn](https://www.linkedin.com/in/rodrigo-rocha-8a1039335/)
