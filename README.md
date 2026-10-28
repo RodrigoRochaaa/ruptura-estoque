@@ -135,29 +135,7 @@ pytest                        # contrato dos arquivos do app, números de refer�
 └── tests/
 ```
 
-## O que aprendi
-
-A primeira versão marcava como "ruptura" todo produto parado e estimava **£2,8 milhões** de faturamento perdido.
-O número estava errado de duas formas. Primeiro, a conta multiplicava o faturamento *por dia de venda* por dias
-*corridos*, o que inflava o valor 3,9 vezes. Segundo, quando rodei o backtest com os 12 meses seguintes, 76% dos
-produtos marcados nunca mais venderam: eram produtos saindo de linha, não produtos sem estoque. A minha métrica
-também empatava com o baseline "dias sem vender" para prever quem ia parar.
-
-O projeto mudou por causa disso. O impacto virou uma taxa (£/semana), e os alertas foram separados por causa
-provável, cada um com a taxa de acerto que teve no backtest. O silêncio relativo passou a ser apresentado pelo
-que ele faz bem: avisar mais cedo. Além disso, a caixa dos códigos de produto (`85099B` e `85099b` são o mesmo
-item) e uma mediana digitada à mão, que tinha ficado velha, também geravam alertas falsos. Os dois problemas
-viraram data quality checks.
-
-## Próximos passos
-
-- **Validar as categorias nas 19 datas**, e não só em 09/12/2010, com features e gold calculadas por data de
-  referência.
-- **Usar os sinais de estoque que já estão na bronze:** ajustes de saída (*damaged*, *missing*, *No Stock*) e
-  cancelamentos, como evidência no detalhe do produto.
-- **Contar o tempo em dias comerciais**, o que explica a inversão de janeiro de 2011.
-- **Validar o método com ground truth de stockout** num dataset público rotulado
-  ([FreshRetailNet-50K](https://arxiv.org/abs/2505.16319)), em um projeto separado.
+    
 
 ## Dados
 
